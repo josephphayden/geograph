@@ -1,5 +1,8 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
+import { useQuery } from '@apollo/react-hooks';
+
+import { getCountries } from './queries';
 
 const css = {
   container: {
@@ -14,6 +17,8 @@ const css = {
 };
 
 const App = () => {
+  const { data } = useQuery(getCountries);
+
   return (
     <div css={css.container}>
       <div css={css.header}>
