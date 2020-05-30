@@ -1,6 +1,7 @@
 const colors = {
   primary: '#05386b',
   secondary: '#5cdb95',
+  highlight: '#379683',
   white: '#edf5e1',
   grey: '#424242',
 };
@@ -9,6 +10,11 @@ const baseline = 16;
 
 const layout = {
   inputHeight: baseline * 2.5,
+  inputWidths: {
+    small: baseline * 10,
+    medium: baseline * 20,
+    large: baseline * 40,
+  },
 };
 
 const borders = {

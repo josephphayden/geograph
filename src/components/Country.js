@@ -3,6 +3,8 @@ import { jsx } from '@emotion/core';
 import PropTypes from 'prop-types';
 import Property from './Property';
 
+import { formatGini } from '../utils/format';
+
 const css = {
   container: (theme) => ({
     backgroundColor: theme.colors.white,
@@ -42,7 +44,7 @@ const Country = ({
     </div>
     <div css={css.fieldRow}>
       <Property name="Capital" value={capital} />
-      <Property name="Gini index" value={gini} />
+      <Property name="Gini index" value={formatGini(gini)} />
     </div>
     <div css={css.fieldRow}>
       <Property name="Population" value={population} />
