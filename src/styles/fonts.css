@@ -1,0 +1,21 @@
+@font-face {
+  font-family: 'BarlowCondensed-SemiBold';
+  font-style: 'bold';
+  font-weight: 600;
+  src: local('BarlowCondensed-SemiBold'),
+    url('./fonts/BarlowCondensed-SemiBold.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'OpenSans-Regular';
+  font-style: 'normal';
+  font-weight: 400;
+  src: local('OpenSans-Regular'), url('./fonts/OpenSans-Regular.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'OpenSans-SemiBold';
+  font-style: 'bold';
+  font-weight: 600;
+  src: local('OpenSans-SemiBold'), url('./fonts/OpenSans-SemiBold.ttf') format('truetype');
+}
