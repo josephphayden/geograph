@@ -3,7 +3,7 @@ import { gql } from 'apollo-boost';
 
 export const getCountries = gql`
   {
-    Country {
+    Country(first: 150) {
       alpha3Code
       name
       population

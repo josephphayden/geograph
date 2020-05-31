@@ -27,7 +27,7 @@ const css = {
     fontSize: theme.font.scale.xlarge,
   }),
   flag: (theme) => ({
-    maxHeight: theme.baseline * 2.5,
+    height: theme.baseline * 2.5,
     width: 'auto',
     borderRadius: theme.borders.radius.low,
     marginLeft: theme.baseline / 2,

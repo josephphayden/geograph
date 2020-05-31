@@ -6,6 +6,7 @@ import { useQuery } from '@apollo/react-hooks';
 import { getCountries } from './queries';
 import CountriesList from './components/CountriesList';
 import Filters from './components/Filters';
+import Pagination from './components/Pagination';
 import { ReactComponent as FiltersIcon } from './icons/filters.svg';
 
 import {
@@ -90,6 +91,8 @@ const filterCountries = ({ countries, selectedCountries, minGini, maxGini }) =>
     return true;
   });
 
+const pageSize = 40;
+
 const App = () => {
   const [allCountries, setAllCountries] = useState([]);
   const [visibleCountries, setVisibleCountries] = useState([]);
@@ -98,6 +101,9 @@ const App = () => {
   const [maxGini, setMaxGini] = useState('');
   const [showFilters, setShowFilters] = useState(false);
   const [sortOption, setSortOption] = useState(sortOptions[0]);
+  const [pageIndex, setPageIndex] = useState(0);
+  const [numPages, setNumPages] = useState(1);
+  const [page, setPage] = useState([]);
   const { data } = useQuery(getCountries);
 
   const toggleFilters = () => setShowFilters(!showFilters);
@@ -109,6 +115,13 @@ const App = () => {
   }, [data]);
 
   useEffect(() => {
+    const startIndex = pageIndex * pageSize;
+    const endIndex = startIndex + pageSize;
+    setPage(visibleCountries.slice(startIndex, endIndex));
+    setNumPages(Math.ceil(visibleCountries.length / pageSize));
+  }, [visibleCountries, pageIndex]);
+
+  useEffect(() => {
     if (allCountries.length > 0) {
       const countriesCopy = [...allCountries];
       const filtersSelected = selectedCountries.length > 0 || minGini || maxGini;
@@ -118,6 +131,7 @@ const App = () => {
         : countriesCopy;
 
       setVisibleCountries([...sortOption.sort(filteredCountries)]);
+      setPageIndex(0);
     }
   }, [allCountries, sortOption, selectedCountries, minGini, maxGini]);
 
@@ -155,7 +169,8 @@ const App = () => {
           setMaxGini={setMaxGini}
         />
       )}
-      <CountriesList countries={visibleCountries} updateCountry={updateCountry} />
+      <CountriesList countries={page} updateCountry={updateCountry} />
+      <Pagination setPageIndex={setPageIndex} pageIndex={pageIndex} numPages={numPages} />
     </div>
   );
 };
