@@ -33,7 +33,7 @@ const NumberInput = ({ name, placeholder, value, onChange, size, min, max, step 
     id={name}
     name={name}
     value={value}
-    onChange={(event) => onChange(event.target.value)}
+    onChange={(event) => onChange(event.target.value, event.target.name)}
     min={min}
     max={max}
     step={step}
@@ -42,8 +42,8 @@ const NumberInput = ({ name, placeholder, value, onChange, size, min, max, step 
 
 NumberInput.defaultProps = {
   size: 'xsmall',
-  min: 0,
-  max: 100,
+  min: '0',
+  max: '',
   step: 1,
   placeholder: '',
 };
@@ -54,8 +54,8 @@ NumberInput.propTypes = {
   value: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
   size: PropTypes.string,
-  min: PropTypes.number,
-  max: PropTypes.number,
+  min: PropTypes.string,
+  max: PropTypes.string,
   step: PropTypes.number,
 };
 

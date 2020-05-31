@@ -1,6 +1,7 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
 import PropTypes from 'prop-types';
+import NumberInput from './NumberInput';
 
 const css = {
   name: (theme) => ({
@@ -10,16 +11,29 @@ const css = {
   }),
 };
 
-const Property = ({ name, value }) => (
+const Property = ({ label, name, value, editable, onChange }) => (
   <div>
-    <span css={css.name}>{name}</span>
-    <span>{value}</span>
+    <span css={css.name}>{label}</span>
+    {editable ? (
+      <NumberInput value={value} name={name} onChange={onChange} />
+    ) : (
+      <span>{value}</span>
+    )}
   </div>
 );
 
+Property.defaultProps = {
+  editable: false,
+  name: '',
+  onChange: null,
+};
+
 Property.propTypes = {
-  name: PropTypes.string.isRequired,
+  label: PropTypes.string.isRequired,
+  name: PropTypes.string,
   value: PropTypes.string.isRequired,
+  editable: PropTypes.string,
+  onChange: PropTypes.func,
 };
 
 export default Property;

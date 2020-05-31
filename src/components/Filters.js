@@ -94,11 +94,17 @@ const Filters = ({
     </label>
     <label htmlFor="minGini" css={css.gini}>
       <span css={css.label}>Min. Gini</span>
-      <NumberInput name="minGini" placeholder="0" value={minGini} onChange={setMinGini} />
+      <NumberInput name="minGini" placeholder="0" value={minGini} onChange={setMinGini} max="100" />
     </label>
     <label htmlFor="maxGini" css={css.maxGini}>
       <span css={css.label}>Max. Gini</span>
-      <NumberInput name="maxGini" placeholder="100" value={maxGini} onChange={setMaxGini} />
+      <NumberInput
+        name="maxGini"
+        placeholder="100"
+        value={maxGini}
+        onChange={setMaxGini}
+        max="100"
+      />
     </label>
     <label htmlFor="sort" css={css.sort}>
       <span css={css.label}>Sort</span>
