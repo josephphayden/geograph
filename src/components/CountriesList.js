@@ -14,13 +14,14 @@ const css = {
       ...theme.styles.grid({ gap: theme.baseline * 2, numColumns: 3 }),
     },
     marginTop: theme.baseline,
+    paddingBottom: theme.baseline * 2,
   }),
 };
 
 const CountriesList = ({ countries }) => (
   <div css={css.grid}>
     {countries.map((country) => (
-      <Country key={country.name} country={country} />
+      <Country key={country.id} country={country} />
     ))}
   </div>
 );

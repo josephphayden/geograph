@@ -16,14 +16,19 @@ const css = ({ theme, size }) => ({
     borderColor: theme.colors.primary,
     outline: 'none',
     boxShadow: theme.shadows.short,
-    height: theme.layout.inputHeight,
-    width: theme.layout.inputWidths[size],
+    width: '100%',
+    maxWidth: theme.layout.inputWidths[size],
     '&:hover': {
       borderColor: theme.colors.highlight,
     },
     ...(state.isFocused && {
       borderColor: theme.colors.primary,
     }),
+  }),
+  valueContainer: (provided) => ({
+    ...provided,
+    minHeight: theme.layout.inputHeight,
+    padding: theme.baseline / 2,
   }),
   indicatorsContainer: (provided) => ({
     ...provided,
@@ -43,6 +48,7 @@ const css = ({ theme, size }) => ({
     boxShadow: theme.shadows.medium,
     zIndex: 10,
     overflow: 'auto',
+    maxWidth: theme.layout.inputWidths[size],
   }),
   menuList: (provided) => ({
     ...provided,
@@ -72,7 +78,19 @@ const css = ({ theme, size }) => ({
   }),
 });
 
-const Select = ({ name, value, placeholder, onChange, options, size }) => {
+const Select = ({
+  name,
+  value,
+  defaultValue,
+  placeholder,
+  onChange,
+  options,
+  size,
+  isMulti,
+  isSearchable,
+  isClearable,
+  filterOption,
+}) => {
   const theme = useTheme();
 
   return (
@@ -80,11 +98,16 @@ const Select = ({ name, value, placeholder, onChange, options, size }) => {
       id={name}
       name={name}
       value={value}
+      defaultValue={defaultValue}
       placeholder={placeholder}
       onChange={onChange}
       options={options}
       getOptionLabel={(option) => option.name}
       getOptionValue={(option) => option.id}
+      isClearable={isClearable}
+      isSearchable={isSearchable}
+      filterOption={filterOption}
+      isMulti={isMulti}
       styles={css({ theme, size })}
     />
   );
@@ -92,15 +115,33 @@ const Select = ({ name, value, placeholder, onChange, options, size }) => {
 
 Select.defaultProps = {
   size: 'medium',
+  placeholder: '',
+  value: null,
+  defaultValue: null,
+  filterOption: null,
+  isMulti: false,
+  isSearchable: false,
+  isClearable: false,
 };
 
 Select.propTypes = {
   name: PropTypes.string.isRequired,
-  placeholder: PropTypes.string.isRequired,
-  value: PropTypes.objectOf(PropTypes.any).isRequired,
+  placeholder: PropTypes.string,
+  value: PropTypes.oneOfType([
+    PropTypes.objectOf(PropTypes.any),
+    PropTypes.arrayOf(PropTypes.object),
+  ]),
+  defaultValue: PropTypes.oneOfType([
+    PropTypes.objectOf(PropTypes.any),
+    PropTypes.arrayOf(PropTypes.any),
+  ]),
   options: PropTypes.arrayOf(PropTypes.object).isRequired,
   onChange: PropTypes.func.isRequired,
+  filterOption: PropTypes.func,
   size: PropTypes.string,
+  isMulti: PropTypes.bool,
+  isSearchable: PropTypes.bool,
+  isClearable: PropTypes.bool,
 };
 
 export default Select;

@@ -52,6 +52,7 @@ const css = {
 };
 
 const processApiCountryData = ({
+  alpha3Code,
   name,
   capital,
   population,
@@ -59,6 +60,7 @@ const processApiCountryData = ({
   gini,
   flag: { svgFile: flag },
 }) => ({
+  id: alpha3Code,
   name,
   capital: formatCapital(capital),
   population: formatPopulation(population),
@@ -68,9 +70,32 @@ const processApiCountryData = ({
   flag,
 });
 
+const filterCountries = ({ countries, selectedCountries, minGini, maxGini }) =>
+  countries.filter(({ id: countryId, gini }) => {
+    if ((minGini || maxGini) && !gini) {
+      return false;
+    }
+    if (minGini && gini < Number(minGini)) {
+      return false;
+    }
+
+    if (maxGini && gini > Number(maxGini)) {
+      return false;
+    }
+
+    if (selectedCountries.length > 0 && !selectedCountries.find(({ id }) => id === countryId)) {
+      return false;
+    }
+
+    return true;
+  });
+
 const App = () => {
-  const [countries, setCountries] = useState([]);
-  const [sortedCountries, setSortedCountries] = useState([]);
+  const [allCountries, setAllCountries] = useState([]);
+  const [visibleCountries, setVisibleCountries] = useState([]);
+  const [selectedCountries, setSelectedCountries] = useState([]);
+  const [minGini, setMinGini] = useState('');
+  const [maxGini, setMaxGini] = useState('');
   const [showFilters, setShowFilters] = useState(false);
   const [sortOption, setSortOption] = useState(sortOptions[0]);
   const { data } = useQuery(getCountries);
@@ -79,15 +104,22 @@ const App = () => {
 
   useEffect(() => {
     if (data) {
-      setCountries(data.Country.map(processApiCountryData));
+      setAllCountries(data.Country.map(processApiCountryData));
     }
   }, [data]);
 
   useEffect(() => {
-    if (countries.length > 0) {
-      setSortedCountries([...sortOption.sort(countries)]);
+    if (allCountries.length > 0) {
+      const countriesCopy = [...allCountries];
+      const filtersSelected = selectedCountries.length > 0 || minGini || maxGini;
+
+      const filteredCountries = filtersSelected
+        ? filterCountries({ countries: countriesCopy, selectedCountries, minGini, maxGini })
+        : countriesCopy;
+
+      setVisibleCountries([...sortOption.sort(filteredCountries)]);
     }
-  }, [countries, sortOption]);
+  }, [allCountries, sortOption, selectedCountries, minGini, maxGini]);
 
   return (
     <div css={css.container}>
@@ -97,8 +129,20 @@ const App = () => {
           <FiltersIcon css={css.filtersIcon} />
         </button>
       </div>
-      {showFilters && <Filters setSortOption={setSortOption} sortOption={sortOption} />}
-      <CountriesList countries={sortedCountries} />
+      {showFilters && (
+        <Filters
+          setSortOption={setSortOption}
+          sortOption={sortOption}
+          selectedCountries={selectedCountries}
+          allCountries={allCountries}
+          setSelectedCountries={setSelectedCountries}
+          minGini={minGini}
+          setMinGini={setMinGini}
+          maxGini={maxGini}
+          setMaxGini={setMaxGini}
+        />
+      )}
+      <CountriesList countries={visibleCountries} />
     </div>
   );
 };

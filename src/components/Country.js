@@ -1,5 +1,6 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
+import React from 'react';
 import PropTypes from 'prop-types';
 import Property from './Property';
 
@@ -34,24 +35,24 @@ const css = {
   }),
 };
 
-const Country = ({
-  country: { name, capital, gini, population, populationDensity, rank, flag },
-}) => (
-  <div css={css.container}>
-    <div css={css.header}>
-      <h2 css={css.name}>{name}</h2>
-      <img css={css.flag} src={flag} alt={`${name} flag`} />
+const Country = React.memo(
+  ({ country: { name, capital, gini, population, populationDensity, rank, flag } }) => (
+    <div css={css.container}>
+      <div css={css.header}>
+        <h2 css={css.name}>{name}</h2>
+        <img css={css.flag} src={flag} alt={`${name} flag`} />
+      </div>
+      <div css={css.fieldRow}>
+        <Property name="Capital" value={capital} />
+        <Property name="Gini index" value={formatGini(gini)} />
+      </div>
+      <div css={css.fieldRow}>
+        <Property name="Population" value={population} />
+        <Property name="Pop. Density" value={populationDensity} />
+        <Property name="Rank" value={rank} />
+      </div>
     </div>
-    <div css={css.fieldRow}>
-      <Property name="Capital" value={capital} />
-      <Property name="Gini index" value={formatGini(gini)} />
-    </div>
-    <div css={css.fieldRow}>
-      <Property name="Population" value={population} />
-      <Property name="Pop. Density" value={populationDensity} />
-      <Property name="Rank" value={rank} />
-    </div>
-  </div>
+  )
 );
 
 Country.propTypes = {

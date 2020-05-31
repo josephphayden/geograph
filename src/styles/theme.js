@@ -9,10 +9,11 @@ const colors = {
 const baseline = 16;
 
 const layout = {
-  inputHeight: baseline * 2.5,
+  inputHeight: baseline * 3,
   inputWidths: {
+    xsmall: baseline * 5,
     small: baseline * 10,
-    medium: baseline * 20,
+    medium: baseline * 25,
     large: baseline * 40,
   },
 };
