@@ -18,16 +18,17 @@ const css = {
   }),
 };
 
-const CountriesList = ({ countries }) => (
+const CountriesList = ({ countries, updateCountry }) => (
   <div css={css.grid}>
     {countries.map((country) => (
-      <Country key={country.id} country={country} />
+      <Country key={country.id} country={country} updateCountry={updateCountry} />
     ))}
   </div>
 );
 
 CountriesList.propTypes = {
   countries: PropTypes.arrayOf(PropTypes.object).isRequired,
+  updateCountry: PropTypes.func.isRequired,
 };
 
 export default CountriesList;

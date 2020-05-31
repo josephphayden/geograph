@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useQuery } from '@apollo/react-hooks';
 
 import { getCountries } from './queries';
@@ -121,6 +121,19 @@ const App = () => {
     }
   }, [allCountries, sortOption, selectedCountries, minGini, maxGini]);
 
+  const updateCountry = useCallback(
+    (id, update) => {
+      const countryIndex = allCountries.findIndex(({ id: countryId }) => countryId === id);
+      const country = allCountries[countryIndex];
+
+      const newCountries = [...allCountries];
+      newCountries[countryIndex] = { ...country, ...update };
+
+      setAllCountries(newCountries);
+    },
+    [allCountries]
+  );
+
   return (
     <div css={css.container}>
       <div css={css.header}>
@@ -142,7 +155,7 @@ const App = () => {
           setMaxGini={setMaxGini}
         />
       )}
-      <CountriesList countries={visibleCountries} />
+      <CountriesList countries={visibleCountries} updateCountry={updateCountry} />
     </div>
   );
 };

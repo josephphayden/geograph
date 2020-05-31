@@ -6,7 +6,8 @@ import PropTypes from 'prop-types';
 import Button from './Button';
 import Property from './Property';
 
-import { formatGini } from '../utils/format';
+import { formatGini, formatPopulationDensity, formatRank } from '../utils/format';
+import { calculateRank, calculatePopulationDensity } from '../utils/calculate';
 
 const css = {
   container: (theme) => ({
@@ -46,8 +47,29 @@ const css = {
   },
 };
 
+const recalculateValues = ({ original, updatedKey, updatedValue }) => {
+  const update = { ...original, [updatedKey]: updatedValue };
+
+  if (updatedKey === 'rank') {
+    update.populationDensity = formatPopulationDensity(
+      calculatePopulationDensity(original.population, update.rank)
+    );
+  } else if (updatedKey === 'population') {
+    update.populationDensity = formatPopulationDensity(
+      calculatePopulationDensity(update.population, original.rank)
+    );
+  } else if (updatedKey === 'populationDensity') {
+    update.rank = formatRank(calculateRank(original.population, update.populationDensity));
+  }
+
+  return update;
+};
+
 const Country = React.memo(
-  ({ country: { name, capital, gini, population, populationDensity, rank, flag } }) => {
+  ({
+    country: { id, name, capital, gini, population, populationDensity, rank, flag },
+    updateCountry,
+  }) => {
     const [isEditing, setIsEditing] = useState(false);
     const [editedValues, setEditedValues] = useState({ population, populationDensity, rank });
 
@@ -56,10 +78,17 @@ const Country = React.memo(
     }, [population, populationDensity, rank]);
 
     const updateValues = (value, key) => {
-      setEditedValues({ ...editedValues, [key]: value });
+      setEditedValues(
+        recalculateValues({ original: editedValues, updatedKey: key, updatedValue: value })
+      );
     };
 
-    const toggleIsEditing = () => setIsEditing(!isEditing);
+    const toggleIsEditing = () => {
+      setIsEditing(!isEditing);
+      if (isEditing) {
+        updateCountry(id, editedValues);
+      }
+    };
     const buttonLabel = isEditing ? 'Save' : 'Edit';
 
     return (
@@ -86,6 +115,7 @@ const Country = React.memo(
             value={editedValues.populationDensity}
             editable={isEditing}
             onChange={updateValues}
+            inputProps={{ step: 0.01 }}
           />
           <Property
             label="Rank"
@@ -105,6 +135,7 @@ const Country = React.memo(
 
 Country.propTypes = {
   country: PropTypes.objectOf(PropTypes.any).isRequired,
+  updateCountry: PropTypes.func.isRequired,
 };
 
 export default Country;

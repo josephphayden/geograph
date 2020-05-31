@@ -11,11 +11,11 @@ const css = {
   }),
 };
 
-const Property = ({ label, name, value, editable, onChange }) => (
+const Property = ({ label, name, value, editable, onChange, inputProps }) => (
   <div>
     <span css={css.name}>{label}</span>
     {editable ? (
-      <NumberInput value={value} name={name} onChange={onChange} />
+      <NumberInput value={value} name={name} onChange={onChange} {...inputProps} />
     ) : (
       <span>{value}</span>
     )}
@@ -26,14 +26,16 @@ Property.defaultProps = {
   editable: false,
   name: '',
   onChange: null,
+  inputProps: {},
 };
 
 Property.propTypes = {
   label: PropTypes.string.isRequired,
   name: PropTypes.string,
   value: PropTypes.string.isRequired,
-  editable: PropTypes.string,
+  editable: PropTypes.bool,
   onChange: PropTypes.func,
+  inputProps: PropTypes.objectOf(PropTypes.any),
 };
 
 export default Property;
