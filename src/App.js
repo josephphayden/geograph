@@ -1,7 +1,9 @@
 /** @jsx jsx */
 import { jsx } from '@emotion/core';
-import { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useQuery } from '@apollo/react-hooks';
+import LoadingSpinner from 'react-spinners/BounceLoader';
+import { useTheme } from 'emotion-theming';
 
 import { getCountries } from './queries';
 import CountriesList from './components/CountriesList';
@@ -16,7 +18,6 @@ import {
   formatRank,
 } from './utils/format';
 import { calculateRank } from './utils/calculate';
-
 import sortOptions from './data/sortOptions';
 
 const css = {
@@ -49,6 +50,17 @@ const css = {
   }),
   filtersIcon: (theme) => ({
     height: theme.baseline * 2,
+  }),
+  infoContainer: () => ({
+    flexGrow: 1,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  }),
+  error: (theme) => ({
+    fontFamily: theme.font.family.heading,
+    fontSize: theme.font.scale.xxlarge,
+    margin: 0,
   }),
 };
 
@@ -104,7 +116,9 @@ const App = () => {
   const [pageIndex, setPageIndex] = useState(0);
   const [numPages, setNumPages] = useState(1);
   const [page, setPage] = useState([]);
-  const { data } = useQuery(getCountries);
+  const { colors } = useTheme();
+
+  const { data, loading, error } = useQuery(getCountries);
 
   const toggleFilters = () => setShowFilters(!showFilters);
 
@@ -148,6 +162,8 @@ const App = () => {
     [allCountries]
   );
 
+  const showResults = !loading && !error;
+
   return (
     <div css={css.container}>
       <div css={css.header}>
@@ -169,8 +185,18 @@ const App = () => {
           setMaxGini={setMaxGini}
         />
       )}
-      <CountriesList countries={page} updateCountry={updateCountry} />
-      <Pagination setPageIndex={setPageIndex} pageIndex={pageIndex} numPages={numPages} />
+      {!showResults && (
+        <div css={css.infoContainer}>
+          {loading && <LoadingSpinner color={colors.primary} />}
+          {error && <h3 css={css.error}>Error loading data. Please refresh!</h3>}
+        </div>
+      )}
+      {showResults && page.length > 0 && (
+        <React.Fragment>
+          <CountriesList countries={page} updateCountry={updateCountry} />
+          <Pagination setPageIndex={setPageIndex} pageIndex={pageIndex} numPages={numPages} />
+        </React.Fragment>
+      )}
     </div>
   );
 };
