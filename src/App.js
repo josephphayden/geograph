@@ -103,11 +103,11 @@ const filterCountries = ({ countries, selectedCountries, minGini, maxGini }) =>
     return true;
   });
 
-const pageSize = 40;
+const pageSize = 50;
 
 const App = () => {
   const [allCountries, setAllCountries] = useState([]);
-  const [visibleCountries, setVisibleCountries] = useState([]);
+  const [sortedCountries, setSortedCountries] = useState([]);
   const [selectedCountries, setSelectedCountries] = useState([]);
   const [minGini, setMinGini] = useState('');
   const [maxGini, setMaxGini] = useState('');
@@ -131,9 +131,9 @@ const App = () => {
   useEffect(() => {
     const startIndex = pageIndex * pageSize;
     const endIndex = startIndex + pageSize;
-    setPage(visibleCountries.slice(startIndex, endIndex));
-    setNumPages(Math.ceil(visibleCountries.length / pageSize));
-  }, [visibleCountries, pageIndex]);
+    setPage(sortedCountries.slice(startIndex, endIndex));
+    setNumPages(Math.ceil(sortedCountries.length / pageSize));
+  }, [sortedCountries, pageIndex]);
 
   useEffect(() => {
     if (allCountries.length > 0) {
@@ -144,7 +144,7 @@ const App = () => {
         ? filterCountries({ countries: countriesCopy, selectedCountries, minGini, maxGini })
         : countriesCopy;
 
-      setVisibleCountries([...sortOption.sort(filteredCountries)]);
+      setSortedCountries([...sortOption.sort(filteredCountries)]);
       setPageIndex(0);
     }
   }, [allCountries, sortOption, selectedCountries, minGini, maxGini]);
