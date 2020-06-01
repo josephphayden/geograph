@@ -93,6 +93,14 @@ const Select = ({
 }) => {
   const theme = useTheme();
 
+  const handleOnChange = (newValue) => {
+    if (isMulti && newValue === null) {
+      return onChange(defaultValue);
+    }
+
+    return onChange(newValue);
+  };
+
   return (
     <ReactSelect
       id={name}
@@ -100,7 +108,7 @@ const Select = ({
       value={value}
       defaultValue={defaultValue}
       placeholder={placeholder}
-      onChange={onChange}
+      onChange={handleOnChange}
       options={options}
       getOptionLabel={(option) => option.name}
       getOptionValue={(option) => option.id}
